@@ -261,7 +261,7 @@
 		"types": {
 			"getInfo": "overall information",
 			"getCells": "details of cells",
-			"insertCell": "insert a cell",
+			"insertCells": "insert cells",
 			"modifyCell": "modify the cell",
 			"replaceCells": "replace cells",
 			"atIndex": "at index {{index}}",

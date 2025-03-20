@@ -562,14 +562,14 @@ export const ChatRowContent = ({
 									<>
 										{t("chat:notebook.actions.editWants", {
 											action: t(
-												tool.action === "insert_cell"
-													? "chat:notebook.types.insertCell"
+												tool.action === "insert_cells"
+													? "chat:notebook.types.insertCells"
 													: tool.action === "modify_cell_content"
 														? "chat:notebook.types.modifyCell"
 														: "chat:notebook.types.replaceCells",
 											),
 											indexText:
-												tool.action === "modify_cell_content"
+												tool.action === "insert_cells" || tool.action === "modify_cell_content"
 													? t("chat:notebook.types.atIndex", { index: tool.cell_index })
 													: tool.action === "replace_cells" &&
 														  tool.start_index !== undefined &&
@@ -589,14 +589,14 @@ export const ChatRowContent = ({
 									<>
 										{t("chat:notebook.actions.editDid", {
 											action: t(
-												tool.action === "insert_cell"
-													? "chat:notebook.types.insertCell"
+												tool.action === "insert_cells"
+													? "chat:notebook.types.insertCells"
 													: tool.action === "modify_cell_content"
 														? "chat:notebook.types.modifyCell"
 														: "chat:notebook.types.replaceCells",
 											),
 											indexText:
-												tool.action === "modify_cell_content"
+												tool.action === "insert_cells" || tool.action === "modify_cell_content"
 													? t("chat:notebook.types.atIndex", { index: tool.cell_index })
 													: tool.action === "replace_cells" &&
 														  tool.start_index !== undefined &&

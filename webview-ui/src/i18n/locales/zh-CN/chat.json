@@ -261,7 +261,7 @@
 		"types": {
 			"getInfo": "总体信息",
 			"getCells": "单元格详情",
-			"insertCell": "插入单元格",
+			"insertCells": "插入单元格",
 			"modifyCell": "修改单元格",
 			"replaceCells": "替换多个单元格",
 			"atIndex": "在索引 {{index}} 处",

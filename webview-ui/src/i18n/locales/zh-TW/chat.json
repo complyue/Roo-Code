@@ -261,7 +261,7 @@
 		"types": {
 			"getInfo": "整體資訊",
 			"getCells": "儲存格詳情",
-			"insertCell": "插入儲存格",
+			"insertCells": "插入儲存格",
 			"modifyCell": "修改儲存格",
 			"replaceCells": "替換多個儲存格",
 			"atIndex": "在索引 {{index}} 處",

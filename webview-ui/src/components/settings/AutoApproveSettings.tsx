@@ -24,6 +24,9 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	alwaysAllowSubtasks?: boolean
 	alwaysAllowExecute?: boolean
 	allowedCommands?: string[]
+	alwaysAllowNotebookRead?: boolean
+	alwaysAllowNotebookEdit?: boolean
+	alwaysAllowNotebookExecute?: boolean
 	setCachedStateField: SetCachedStateField<
 		| "alwaysAllowReadOnly"
 		| "alwaysAllowReadOnlyOutsideWorkspace"
@@ -38,6 +41,9 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "alwaysAllowSubtasks"
 		| "alwaysAllowExecute"
 		| "allowedCommands"
+		| "alwaysAllowNotebookRead"
+		| "alwaysAllowNotebookEdit"
+		| "alwaysAllowNotebookExecute"
 	>
 }
 
@@ -55,6 +61,9 @@ export const AutoApproveSettings = ({
 	alwaysAllowSubtasks,
 	alwaysAllowExecute,
 	allowedCommands,
+	alwaysAllowNotebookRead,
+	alwaysAllowNotebookEdit,
+	alwaysAllowNotebookExecute,
 	setCachedStateField,
 	className,
 	...props
@@ -308,6 +317,42 @@ export const AutoApproveSettings = ({
 						</div>
 					</div>
 				)}
+
+				<div>
+					<VSCodeCheckbox
+						checked={alwaysAllowNotebookRead}
+						onChange={(e: any) => setCachedStateField("alwaysAllowNotebookRead", e.target.checked)}
+						data-testid="always-allow-notebook-read-checkbox">
+						<span className="font-medium">Read Notebooks</span>
+					</VSCodeCheckbox>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						Allow reading notebook content without confirmation
+					</div>
+				</div>
+
+				<div>
+					<VSCodeCheckbox
+						checked={alwaysAllowNotebookEdit}
+						onChange={(e: any) => setCachedStateField("alwaysAllowNotebookEdit", e.target.checked)}
+						data-testid="always-allow-notebook-edit-checkbox">
+						<span className="font-medium">Edit Notebooks</span>
+					</VSCodeCheckbox>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						Allow adding or modifying notebook cells without confirmation
+					</div>
+				</div>
+
+				<div>
+					<VSCodeCheckbox
+						checked={alwaysAllowNotebookExecute}
+						onChange={(e: any) => setCachedStateField("alwaysAllowNotebookExecute", e.target.checked)}
+						data-testid="always-allow-notebook-execute-checkbox">
+						<span className="font-medium">Execute Notebooks</span>
+					</VSCodeCheckbox>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						Allow executing notebook cells without confirmation
+					</div>
+				</div>
 			</Section>
 		</div>
 	)

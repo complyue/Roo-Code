@@ -37,6 +37,12 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		setAlwaysAllowSubtasks,
 		alwaysApproveResubmit,
 		setAlwaysApproveResubmit,
+		alwaysAllowNotebookRead,
+		setAlwaysAllowNotebookRead,
+		alwaysAllowNotebookEdit,
+		setAlwaysAllowNotebookEdit,
+		alwaysAllowNotebookExecute,
+		setAlwaysAllowNotebookExecute,
 		autoApprovalEnabled,
 		setAutoApprovalEnabled,
 	} = useExtensionState()
@@ -100,6 +106,27 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 			enabled: alwaysApproveResubmit ?? false,
 			description: t("chat:autoApprove.actions.retryRequests.description"),
 		},
+		{
+			id: "readNotebooks",
+			label: "Read Notebooks",
+			shortName: "Read Notebooks",
+			enabled: alwaysAllowNotebookRead ?? false,
+			description: "Allow reading notebook content without confirmation",
+		},
+		{
+			id: "editNotebooks",
+			label: "Edit Notebooks",
+			shortName: "Edit Notebooks",
+			enabled: alwaysAllowNotebookEdit ?? false,
+			description: "Allow adding or modifying notebook cells without confirmation",
+		},
+		{
+			id: "executeNotebooks",
+			label: "Execute Notebooks",
+			shortName: "Execute Notebooks",
+			enabled: alwaysAllowNotebookExecute ?? false,
+			description: "Allow executing notebook cells without confirmation",
+		},
 	]
 
 	const toggleExpanded = useCallback(() => {
@@ -160,6 +187,24 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		vscode.postMessage({ type: "alwaysApproveResubmit", bool: newValue })
 	}, [alwaysApproveResubmit, setAlwaysApproveResubmit])
 
+	const handleNotebookReadChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookRead ?? false)
+		setAlwaysAllowNotebookRead(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookRead", bool: newValue } as any)
+	}, [alwaysAllowNotebookRead, setAlwaysAllowNotebookRead])
+
+	const handleNotebookEditChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookEdit ?? false)
+		setAlwaysAllowNotebookEdit(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookEdit", bool: newValue } as any)
+	}, [alwaysAllowNotebookEdit, setAlwaysAllowNotebookEdit])
+
+	const handleNotebookExecuteChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookExecute ?? false)
+		setAlwaysAllowNotebookExecute(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookExecute", bool: newValue } as any)
+	}, [alwaysAllowNotebookExecute, setAlwaysAllowNotebookExecute])
+
 	const handleOpenSettings = useCallback(() => {
 		window.postMessage({
 			type: "action",
@@ -178,6 +223,9 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		switchModes: handleModeSwitchChange,
 		subtasks: handleSubtasksChange,
 		retryRequests: handleRetryChange,
+		readNotebooks: handleNotebookReadChange,
+		editNotebooks: handleNotebookEditChange,
+		executeNotebooks: handleNotebookExecuteChange,
 	}
 
 	return (

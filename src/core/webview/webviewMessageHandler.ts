@@ -736,6 +736,12 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 				Terminal.setShellIntegrationTimeout(message.value)
 			}
 			break
+		case "notebookMaxOutputSize":
+			await updateGlobalState("notebookMaxOutputSize", message.value)
+			break
+		case "notebookTimeoutSeconds":
+			await updateGlobalState("notebookTimeoutSeconds", message.value)
+			break
 		case "mode":
 			await provider.handleModeSwitch(message.text as Mode)
 			break

@@ -13,6 +13,7 @@ import {
 	AlertTriangle,
 	Globe,
 	Info,
+	NotebookText,
 	LucideIcon,
 } from "lucide-react"
 import { CaretSortIcon } from "@radix-ui/react-icons"
@@ -22,7 +23,7 @@ import { TelemetrySetting } from "../../../../src/shared/TelemetrySetting"
 import { ApiConfiguration } from "../../../../src/shared/api"
 
 import { vscode } from "@/utils/vscode"
-import { ExtensionStateContextType, useExtensionState } from "@/context/ExtensionStateContext"
+import { useExtensionState } from "@/context/ExtensionStateContext"
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -50,6 +51,7 @@ import { CheckpointSettings } from "./CheckpointSettings"
 import { NotificationSettings } from "./NotificationSettings"
 import { ContextManagementSettings } from "./ContextManagementSettings"
 import { TerminalSettings } from "./TerminalSettings"
+import { NotebookSettings } from "./NotebookSettings"
 import { AdvancedSettings } from "./AdvancedSettings"
 import { ExperimentalSettings } from "./ExperimentalSettings"
 import { LanguageSettings } from "./LanguageSettings"
@@ -68,6 +70,7 @@ const sectionNames = [
 	"notifications",
 	"contextManagement",
 	"terminal",
+	"notebook",
 	"advanced",
 	"experimental",
 	"language",
@@ -130,6 +133,8 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		telemetrySetting,
 		terminalOutputLineLimit,
 		terminalShellIntegrationTimeout,
+		notebookMaxOutputSize,
+		notebookTimeoutSeconds,
 		writeDelayMs,
 		showRooIgnoredFiles,
 		remoteBrowserEnabled,
@@ -159,7 +164,44 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		}
 	}, [settingsImportedAt, extensionState])
 
-	const setCachedStateField: SetCachedStateField<keyof ExtensionStateContextType> = useCallback((field, value) => {
+	const setCachedStateField: SetCachedStateField<
+		| "alwaysAllowReadOnly"
+		| "alwaysAllowReadOnlyOutsideWorkspace"
+		| "alwaysAllowWrite"
+		| "alwaysAllowWriteOutsideWorkspace"
+		| "writeDelayMs"
+		| "alwaysAllowBrowser"
+		| "alwaysApproveResubmit"
+		| "requestDelaySeconds"
+		| "alwaysAllowMcp"
+		| "alwaysAllowModeSwitch"
+		| "alwaysAllowSubtasks"
+		| "alwaysAllowExecute"
+		| "allowedCommands"
+		| "ttsEnabled"
+		| "ttsSpeed"
+		| "soundEnabled"
+		| "soundVolume"
+		| "enableCheckpoints"
+		| "checkpointStorage"
+		| "browserToolEnabled"
+		| "browserViewportSize"
+		| "screenshotQuality"
+		| "remoteBrowserHost"
+		| "remoteBrowserEnabled"
+		| "language"
+		| "maxOpenTabsContext"
+		| "maxWorkspaceFiles"
+		| "showRooIgnoredFiles"
+		| "maxReadFileLine"
+		| "rateLimitSeconds"
+		| "diffEnabled"
+		| "fuzzyMatchThreshold"
+		| "terminalOutputLineLimit"
+		| "terminalShellIntegrationTimeout"
+		| "notebookMaxOutputSize"
+		| "notebookTimeoutSeconds"
+	> = useCallback((field, value) => {
 		setCachedState((prevState) => {
 			if (prevState[field] === value) {
 				return prevState
@@ -238,6 +280,8 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			vscode.postMessage({ type: "screenshotQuality", value: screenshotQuality ?? 75 })
 			vscode.postMessage({ type: "terminalOutputLineLimit", value: terminalOutputLineLimit ?? 500 })
 			vscode.postMessage({ type: "terminalShellIntegrationTimeout", value: terminalShellIntegrationTimeout })
+			vscode.postMessage({ type: "notebookMaxOutputSize", value: notebookMaxOutputSize ?? 2000 })
+			vscode.postMessage({ type: "notebookTimeoutSeconds", value: notebookTimeoutSeconds ?? 30 })
 			vscode.postMessage({ type: "mcpEnabled", bool: mcpEnabled })
 			vscode.postMessage({ type: "alwaysApproveResubmit", bool: alwaysApproveResubmit })
 			vscode.postMessage({ type: "requestDelaySeconds", value: requestDelaySeconds })
@@ -283,6 +327,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 	const notificationsRef = useRef<HTMLDivElement>(null)
 	const contextManagementRef = useRef<HTMLDivElement>(null)
 	const terminalRef = useRef<HTMLDivElement>(null)
+	const notebookRef = useRef<HTMLDivElement>(null)
 	const advancedRef = useRef<HTMLDivElement>(null)
 	const experimentalRef = useRef<HTMLDivElement>(null)
 	const languageRef = useRef<HTMLDivElement>(null)
@@ -297,6 +342,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			{ id: "notifications", icon: Bell, ref: notificationsRef },
 			{ id: "contextManagement", icon: Database, ref: contextManagementRef },
 			{ id: "terminal", icon: SquareTerminal, ref: terminalRef },
+			{ id: "notebook", icon: NotebookText, ref: notebookRef },
 			{ id: "advanced", icon: Cog, ref: advancedRef },
 			{ id: "experimental", icon: FlaskConical, ref: experimentalRef },
 			{ id: "language", icon: Globe, ref: languageRef },
@@ -310,6 +356,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			notificationsRef,
 			contextManagementRef,
 			terminalRef,
+			notebookRef,
 			advancedRef,
 			experimentalRef,
 		],
@@ -483,6 +530,14 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 					<TerminalSettings
 						terminalOutputLineLimit={terminalOutputLineLimit}
 						terminalShellIntegrationTimeout={terminalShellIntegrationTimeout}
+						setCachedStateField={setCachedStateField}
+					/>
+				</div>
+
+				<div ref={notebookRef}>
+					<NotebookSettings
+						notebookMaxOutputSize={notebookMaxOutputSize}
+						notebookTimeoutSeconds={notebookTimeoutSeconds}
 						setCachedStateField={setCachedStateField}
 					/>
 				</div>

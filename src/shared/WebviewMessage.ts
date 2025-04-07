@@ -121,6 +121,8 @@ export interface WebviewMessage {
 		| "maxReadFileLine"
 		| "searchFiles"
 		| "toggleApiConfigPin"
+		| "notebookMaxOutputSize"
+		| "notebookTimeoutSeconds"
 	text?: string
 	disabled?: boolean
 	askResponse?: ClineAskResponse

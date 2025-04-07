@@ -153,6 +153,8 @@ export type ExtensionState = Pick<
 	// | "maxReadFileLine" // Optional in GlobalSettings, required here.
 	| "terminalOutputLineLimit"
 	| "terminalShellIntegrationTimeout"
+	| "notebookMaxOutputSize"
+	| "notebookTimeoutSeconds"
 	// | "rateLimitSeconds" // Optional in GlobalSettings, required here.
 	| "diffEnabled"
 	| "fuzzyMatchThreshold"
@@ -204,6 +206,12 @@ export type ExtensionState = Pick<
 
 	renderContext: "sidebar" | "editor"
 	settingsImportedAt?: number
+
+	terminalOutputLineLimit?: number
+	terminalShellIntegrationTimeout?: number
+
+	notebookMaxOutputSize?: number
+	notebookTimeoutSeconds?: number
 }
 
 export type { ClineMessage, ClineAsk, ClineSay }

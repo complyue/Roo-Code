@@ -38,7 +38,17 @@ export type ProviderName = z.infer<typeof providerNamesSchema>
  * ToolGroup
  */
 
-export const toolGroups = ["read", "edit", "browser", "command", "mcp", "modes"] as const
+export const toolGroups = [
+	"read",
+	"edit",
+	"browser",
+	"command",
+	"mcp",
+	"modes",
+	"read_nb",
+	"edit_nb",
+	"exec_nb",
+] as const
 
 export const toolGroupsSchema = z.enum(toolGroups)
 
@@ -526,6 +536,8 @@ export const globalSettingsSchema = z.object({
 
 	terminalOutputLineLimit: z.number().optional(),
 	terminalShellIntegrationTimeout: z.number().optional(),
+	notebookMaxOutputSize: z.number().optional(),
+	notebookTimeoutSeconds: z.number().optional(),
 
 	rateLimitSeconds: z.number().optional(),
 	diffEnabled: z.boolean().optional(),
@@ -596,6 +608,8 @@ const globalSettingsRecord: GlobalSettingsRecord = {
 
 	terminalOutputLineLimit: undefined,
 	terminalShellIntegrationTimeout: undefined,
+	notebookMaxOutputSize: undefined,
+	notebookTimeoutSeconds: undefined,
 
 	rateLimitSeconds: undefined,
 	diffEnabled: undefined,

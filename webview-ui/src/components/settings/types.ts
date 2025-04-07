@@ -1,10 +1,43 @@
 import { ExperimentId } from "../../../../src/shared/experiments"
 
-import { ExtensionStateContextType } from "@/context/ExtensionStateContext"
+export type SetCachedStateField<
+	K extends
+		| "alwaysAllowReadOnly"
+		| "alwaysAllowReadOnlyOutsideWorkspace"
+		| "alwaysAllowWrite"
+		| "alwaysAllowWriteOutsideWorkspace"
+		| "writeDelayMs"
+		| "alwaysAllowBrowser"
+		| "alwaysApproveResubmit"
+		| "requestDelaySeconds"
+		| "alwaysAllowMcp"
+		| "alwaysAllowModeSwitch"
+		| "alwaysAllowSubtasks"
+		| "alwaysAllowExecute"
+		| "allowedCommands"
+		| "ttsEnabled"
+		| "ttsSpeed"
+		| "soundEnabled"
+		| "soundVolume"
+		| "enableCheckpoints"
+		| "checkpointStorage"
+		| "browserToolEnabled"
+		| "browserViewportSize"
+		| "screenshotQuality"
+		| "remoteBrowserHost"
+		| "remoteBrowserEnabled"
+		| "language"
+		| "maxOpenTabsContext"
+		| "maxWorkspaceFiles"
+		| "showRooIgnoredFiles"
+		| "maxReadFileLine"
+		| "rateLimitSeconds"
+		| "diffEnabled"
+		| "fuzzyMatchThreshold"
+		| "terminalOutputLineLimit"
+		| "terminalShellIntegrationTimeout"
+		| "notebookMaxOutputSize"
+		| "notebookTimeoutSeconds",
+> = (key: K, value: any) => void
 
-export type SetCachedStateField<K extends keyof ExtensionStateContextType> = (
-	field: K,
-	value: ExtensionStateContextType[K],
-) => void
-
-export type SetExperimentEnabled = (id: ExperimentId, enabled: boolean) => void
+export type SetExperimentEnabled = (experiment: ExperimentId, enabled: boolean) => void

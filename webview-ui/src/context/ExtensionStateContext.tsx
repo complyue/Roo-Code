@@ -86,6 +86,10 @@ export interface ExtensionStateContextType extends ExtensionState {
 	pinnedApiConfigs?: Record<string, boolean>
 	setPinnedApiConfigs: (value: Record<string, boolean>) => void
 	togglePinnedApiConfig: (configName: string) => void
+	notebookMaxOutputSize?: number
+	setNotebookMaxOutputSize: (value: number) => void
+	notebookTimeoutSeconds?: number
+	setNotebookTimeoutSeconds: (value: number) => void
 }
 
 export const ExtensionStateContext = createContext<ExtensionStateContextType | undefined>(undefined)
@@ -161,6 +165,8 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		renderContext: "sidebar",
 		maxReadFileLine: 500, // Default max read file line limit
 		pinnedApiConfigs: {}, // Empty object for pinned API configs
+		notebookMaxOutputSize: 2000,
+		notebookTimeoutSeconds: 30,
 	})
 
 	const [didHydrateState, setDidHydrateState] = useState(false)
@@ -291,6 +297,9 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 			setState((prevState) => ({ ...prevState, terminalOutputLineLimit: value })),
 		setTerminalShellIntegrationTimeout: (value) =>
 			setState((prevState) => ({ ...prevState, terminalShellIntegrationTimeout: value })),
+		setNotebookMaxOutputSize: (value) => setState((prevState) => ({ ...prevState, notebookMaxOutputSize: value })),
+		setNotebookTimeoutSeconds: (value) =>
+			setState((prevState) => ({ ...prevState, notebookTimeoutSeconds: value })),
 		setMcpEnabled: (value) => setState((prevState) => ({ ...prevState, mcpEnabled: value })),
 		setEnableMcpServerCreation: (value) =>
 			setState((prevState) => ({ ...prevState, enableMcpServerCreation: value })),

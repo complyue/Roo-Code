@@ -23,6 +23,9 @@ export const TOOL_DISPLAY_NAMES = {
 	attempt_completion: "complete tasks",
 	switch_mode: "switch modes",
 	new_task: "create new task",
+	notebook_read: "read notebook",
+	notebook_edit: "edit notebook",
+	notebook_execute: "execute notebook",
 } as const
 
 export type { ToolGroup }
@@ -47,6 +50,15 @@ export const TOOL_GROUPS: Record<ToolGroup, ToolGroupConfig> = {
 	modes: {
 		tools: ["switch_mode", "new_task"],
 		alwaysAvailable: true,
+	},
+	read_nb: {
+		tools: ["notebook_read"],
+	},
+	edit_nb: {
+		tools: ["notebook_edit"],
+	},
+	exec_nb: {
+		tools: ["notebook_execute"],
 	},
 }
 

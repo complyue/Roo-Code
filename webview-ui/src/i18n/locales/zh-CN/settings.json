@@ -26,6 +26,7 @@
 		"notifications": "通知",
 		"contextManagement": "上下文管理",
 		"terminal": "终端",
+		"notebook": "笔记本",
 		"advanced": "高级",
 		"experimental": "实验性功能",
 		"language": "语言",
@@ -444,5 +445,19 @@
 	"labels": {
 		"customArn": "自定义 ARN",
 		"useCustomArn": "使用自定义 ARN..."
+	},
+	"codeContextWindow": "代码上下文窗口",
+	"search": "搜索",
+	"web": "Web",
+	"browser": "浏览器",
+	"notebook": {
+		"output": {
+			"label": "笔记本输出大小限制",
+			"description": "笔记本单元格输出的最大字符数"
+		},
+		"executionTimeout": {
+			"label": "笔记本执行超时时间",
+			"description": "等待笔记本单元格执行的最长时间（秒）"
+		}
 	}
 }

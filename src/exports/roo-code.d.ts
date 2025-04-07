@@ -246,6 +246,9 @@ type GlobalSettings = {
 	alwaysAllowSubtasks?: boolean | undefined
 	alwaysAllowExecute?: boolean | undefined
 	allowedCommands?: string[] | undefined
+	alwaysAllowNotebookRead?: boolean | undefined
+	alwaysAllowNotebookEdit?: boolean | undefined
+	alwaysAllowNotebookExecute?: boolean | undefined
 	browserToolEnabled?: boolean | undefined
 	browserViewportSize?: string | undefined
 	screenshotQuality?: number | undefined
@@ -264,6 +267,8 @@ type GlobalSettings = {
 	maxReadFileLine?: number | undefined
 	terminalOutputLineLimit?: number | undefined
 	terminalShellIntegrationTimeout?: number | undefined
+	notebookMaxOutputSize?: number | undefined
+	notebookTimeoutSeconds?: number | undefined
 	rateLimitSeconds?: number | undefined
 	diffEnabled?: boolean | undefined
 	fuzzyMatchThreshold?: number | undefined
@@ -309,9 +314,19 @@ type GlobalSettings = {
 				roleDefinition: string
 				customInstructions?: string | undefined
 				groups: (
-					| ("read" | "edit" | "browser" | "command" | "mcp" | "modes")
+					| ("read" | "edit" | "browser" | "command" | "mcp" | "modes" | "read_nb" | "edit_nb" | "exec_nb")
 					| [
-							"read" | "edit" | "browser" | "command" | "mcp" | "modes",
+							(
+								| "read"
+								| "edit"
+								| "browser"
+								| "command"
+								| "mcp"
+								| "modes"
+								| "read_nb"
+								| "edit_nb"
+								| "exec_nb"
+							),
 							{
 								fileRegex?: string | undefined
 								description?: string | undefined

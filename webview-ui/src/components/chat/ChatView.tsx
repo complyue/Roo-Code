@@ -70,6 +70,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		customModes,
 		telemetrySetting,
 		showGreeting,
+		alwaysAllowNotebookRead,
+		alwaysAllowNotebookEdit,
+		alwaysAllowNotebookExecute,
 	} = useExtensionState()
 
 	//const task = messages.length > 0 ? (messages[0].say === "task" ? messages[0] : undefined) : undefined) : undefined
@@ -166,6 +169,18 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 								case "finishTask":
 									setPrimaryButtonText(t("chat:completeSubtaskAndReturn"))
 									setSecondaryButtonText(undefined)
+									break
+								case "readNotebook":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
+									break
+								case "editNotebook":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
+									break
+								case "executeNotebook":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
 									break
 								default:
 									setPrimaryButtonText(t("chat:approve.title"))
@@ -698,6 +713,19 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					return alwaysAllowSubtasks
 				}
 
+				// Handle notebook operations
+				if (tool?.tool === "readNotebook") {
+					return alwaysAllowNotebookRead
+				}
+
+				if (tool?.tool === "editNotebook") {
+					return alwaysAllowNotebookEdit
+				}
+
+				if (tool?.tool === "executeNotebook") {
+					return alwaysAllowNotebookExecute
+				}
+
 				const isOutsideWorkspace = !!tool.isOutsideWorkspace
 
 				if (isReadOnlyToolAction(message)) {
@@ -726,6 +754,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			isMcpToolAlwaysAllowed,
 			alwaysAllowModeSwitch,
 			alwaysAllowSubtasks,
+			alwaysAllowNotebookRead,
+			alwaysAllowNotebookEdit,
+			alwaysAllowNotebookExecute,
 		],
 	)
 

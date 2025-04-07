@@ -18,6 +18,9 @@ const ICON_MAP: Record<string, string> = {
 	switchModes: "sync",
 	subtasks: "discard",
 	retryRequests: "refresh",
+	readNotebooks: "eye",
+	editNotebooks: "edit",
+	executeNotebooks: "run",
 }
 
 interface AutoApproveAction {
@@ -50,6 +53,12 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		setAlwaysAllowSubtasks,
 		alwaysApproveResubmit,
 		setAlwaysApproveResubmit,
+		alwaysAllowNotebookRead,
+		setAlwaysAllowNotebookRead,
+		alwaysAllowNotebookEdit,
+		setAlwaysAllowNotebookEdit,
+		alwaysAllowNotebookExecute,
+		setAlwaysAllowNotebookExecute,
 		autoApprovalEnabled,
 		setAutoApprovalEnabled,
 	} = useExtensionState()
@@ -104,6 +113,24 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 			label: t("chat:autoApprove.actions.retryRequests.label"),
 			enabled: alwaysApproveResubmit ?? false,
 			description: t("chat:autoApprove.actions.retryRequests.description"),
+		},
+		{
+			id: "readNotebooks",
+			label: t("chat:autoApprove.actions.readNotebooks.label"),
+			enabled: alwaysAllowNotebookRead ?? false,
+			description: t("chat:autoApprove.actions.readNotebooks.description"),
+		},
+		{
+			id: "editNotebooks",
+			label: t("chat:autoApprove.actions.editNotebooks.label"),
+			enabled: alwaysAllowNotebookEdit ?? false,
+			description: t("chat:autoApprove.actions.editNotebooks.description"),
+		},
+		{
+			id: "executeNotebooks",
+			label: t("chat:autoApprove.actions.executeNotebooks.label"),
+			enabled: alwaysAllowNotebookExecute ?? false,
+			description: t("chat:autoApprove.actions.executeNotebooks.description"),
 		},
 	]
 
@@ -165,6 +192,24 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		vscode.postMessage({ type: "alwaysApproveResubmit", bool: newValue })
 	}, [alwaysApproveResubmit, setAlwaysApproveResubmit])
 
+	const handleNotebookReadChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookRead ?? false)
+		setAlwaysAllowNotebookRead(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookRead", bool: newValue } as any)
+	}, [alwaysAllowNotebookRead, setAlwaysAllowNotebookRead])
+
+	const handleNotebookEditChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookEdit ?? false)
+		setAlwaysAllowNotebookEdit(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookEdit", bool: newValue } as any)
+	}, [alwaysAllowNotebookEdit, setAlwaysAllowNotebookEdit])
+
+	const handleNotebookExecuteChange = useCallback(() => {
+		const newValue = !(alwaysAllowNotebookExecute ?? false)
+		setAlwaysAllowNotebookExecute(newValue)
+		vscode.postMessage({ type: "alwaysAllowNotebookExecute", bool: newValue } as any)
+	}, [alwaysAllowNotebookExecute, setAlwaysAllowNotebookExecute])
+
 	const handleOpenSettings = useCallback(() => {
 		window.postMessage({
 			type: "action",
@@ -183,6 +228,9 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 		switchModes: handleModeSwitchChange,
 		subtasks: handleSubtasksChange,
 		retryRequests: handleRetryChange,
+		readNotebooks: handleNotebookReadChange,
+		editNotebooks: handleNotebookEditChange,
+		executeNotebooks: handleNotebookExecuteChange,
 	}
 
 	return (

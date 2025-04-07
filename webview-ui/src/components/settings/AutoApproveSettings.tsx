@@ -66,6 +66,24 @@ const AUTO_APPROVE_SETTINGS_CONFIG = [
 		icon: "terminal",
 		testId: "always-allow-execute-toggle",
 	},
+	{
+		key: "alwaysAllowNotebookRead",
+		labelKey: "settings:autoApprove.notebookRead.label",
+		descriptionKey: "settings:autoApprove.notebookRead.description",
+		icon: "eye",
+	},
+	{
+		key: "alwaysAllowNotebookEdit",
+		labelKey: "settings:autoApprove.notebookEdit.label",
+		descriptionKey: "settings:autoApprove.notebookEdit.description",
+		icon: "edit",
+	},
+	{
+		key: "alwaysAllowNotebookExecute",
+		labelKey: "settings:autoApprove.notebookExecute.label",
+		descriptionKey: "settings:autoApprove.notebookExecute.description",
+		icon: "run",
+	},
 ]
 
 type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
@@ -82,6 +100,9 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	alwaysAllowSubtasks?: boolean
 	alwaysAllowExecute?: boolean
 	allowedCommands?: string[]
+	alwaysAllowNotebookRead?: boolean
+	alwaysAllowNotebookEdit?: boolean
+	alwaysAllowNotebookExecute?: boolean
 	setCachedStateField: SetCachedStateField<
 		| "alwaysAllowReadOnly"
 		| "alwaysAllowReadOnlyOutsideWorkspace"
@@ -96,6 +117,9 @@ type AutoApproveSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "alwaysAllowSubtasks"
 		| "alwaysAllowExecute"
 		| "allowedCommands"
+		| "alwaysAllowNotebookRead"
+		| "alwaysAllowNotebookEdit"
+		| "alwaysAllowNotebookExecute"
 	>
 }
 
@@ -113,6 +137,9 @@ export const AutoApproveSettings = ({
 	alwaysAllowSubtasks,
 	alwaysAllowExecute,
 	allowedCommands,
+	alwaysAllowNotebookRead,
+	alwaysAllowNotebookEdit,
+	alwaysAllowNotebookExecute,
 	setCachedStateField,
 	className,
 	...props
@@ -151,6 +178,9 @@ export const AutoApproveSettings = ({
 							alwaysAllowModeSwitch,
 							alwaysAllowSubtasks,
 							alwaysAllowExecute,
+							alwaysAllowNotebookRead,
+							alwaysAllowNotebookEdit,
+							alwaysAllowNotebookExecute,
 						}
 
 						const value = boolValues[cfg.key as keyof typeof boolValues] ?? false

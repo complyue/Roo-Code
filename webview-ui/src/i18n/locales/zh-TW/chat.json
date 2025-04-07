@@ -204,6 +204,18 @@
 			"retryRequests": {
 				"label": "重試",
 				"description": "當服務提供者回傳錯誤回應時自動重試失敗的 API 請求。"
+			},
+			"readNotebooks": {
+				"label": "NB 讀取",
+				"description": "自動讀取筆記本檔案而無需核准。"
+			},
+			"editNotebooks": {
+				"label": "NB 編輯",
+				"description": "自動建立和編輯筆記本檔案而無需核准。"
+			},
+			"executeNotebooks": {
+				"label": "NB 執行",
+				"description": "自動執行筆記本儲存格而無需核准。"
 			}
 		}
 	},
@@ -219,6 +231,14 @@
 		"description": "將工作拆分成子任務，每個子任務在專門的模式中執行，如 code、architect、debug 或自訂模式。",
 		"learnMore": "了解更多 →",
 		"hideButton": "隱藏公告"
+	},
+	"notebook": {
+		"wantsToRead": "Roo 想要讀取目前作用中的筆記本",
+		"didRead": "Roo 已讀取目前作用中的筆記本",
+		"wantsToEdit": "Roo 想要編輯目前作用中的筆記本",
+		"didEdit": "Roo 已編輯目前作用中的筆記本",
+		"wantsToExecute": "Roo 想要執行目前作用中筆記本的儲存格",
+		"didExecute": "Roo 已執行筆記本的儲存格"
 	},
 	"browser": {
 		"rooWantsToUse": "Roo 想要使用瀏覽器：",

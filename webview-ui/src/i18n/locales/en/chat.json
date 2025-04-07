@@ -204,6 +204,18 @@
 			"retryRequests": {
 				"label": "Retries",
 				"description": "Automatically retry failed API requests when the provider returns an error response."
+			},
+			"readNotebooks": {
+				"label": "NB Read",
+				"description": "Automatically read notebook files without requiring approval."
+			},
+			"editNotebooks": {
+				"label": "NB Edit",
+				"description": "Automatically create and edit notebook files without requiring approval."
+			},
+			"executeNotebooks": {
+				"label": "NB Execute",
+				"description": "Automatically execute notebook cells without requiring approval."
 			}
 		}
 	},
@@ -219,6 +231,14 @@
 	},
 	"followUpSuggest": {
 		"copyToInput": "Copy to input (same as shift + click)"
+	},
+	"notebook": {
+		"wantsToRead": "Roo wants to read the active notebook",
+		"didRead": "Roo did read the active notebook",
+		"wantsToEdit": "Roo wants to edit the active notebook",
+		"didEdit": "Roo edited the active notebook",
+		"wantsToExecute": "Roo wants to execute cell(s) of the active notebook",
+		"didExecute": "Roo executed cells of the active notebook"
 	},
 	"browser": {
 		"rooWantsToUse": "Roo wants to use the browser:",

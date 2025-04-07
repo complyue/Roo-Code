@@ -69,6 +69,9 @@ export interface ExtensionMessage {
 		| "maxReadFileLine"
 		| "fileSearchResults"
 		| "toggleApiConfigPin"
+		| "alwaysAllowNotebookRead"
+		| "alwaysAllowNotebookEdit"
+		| "alwaysAllowNotebookExecute"
 	text?: string
 	action?:
 		| "chatButtonClicked"
@@ -136,6 +139,9 @@ export type ExtensionState = Pick<
 	| "alwaysAllowSubtasks"
 	| "alwaysAllowExecute"
 	| "allowedCommands"
+	| "alwaysAllowNotebookRead"
+	| "alwaysAllowNotebookEdit"
+	| "alwaysAllowNotebookExecute"
 	| "browserToolEnabled"
 	| "browserViewportSize"
 	| "screenshotQuality"
@@ -160,6 +166,8 @@ export type ExtensionState = Pick<
 	| "terminalZshOhMy"
 	| "terminalZshP10k"
 	| "terminalZdotdir"
+	| "notebookMaxOutputSize"
+	| "notebookTimeoutSeconds"
 	| "diffEnabled"
 	| "fuzzyMatchThreshold"
 	// | "experiments" // Optional in GlobalSettings, required here.
@@ -209,6 +217,12 @@ export type ExtensionState = Pick<
 
 	renderContext: "sidebar" | "editor"
 	settingsImportedAt?: number
+
+	terminalOutputLineLimit?: number
+	terminalShellIntegrationTimeout?: number
+
+	notebookMaxOutputSize?: number
+	notebookTimeoutSeconds?: number
 }
 
 export type { ClineMessage, ClineAsk, ClineSay }
@@ -227,6 +241,9 @@ export interface ClineSayTool {
 		| "switchMode"
 		| "newTask"
 		| "finishTask"
+		| "readNotebook"
+		| "editNotebook"
+		| "executeNotebook"
 	path?: string
 	diff?: string
 	content?: string

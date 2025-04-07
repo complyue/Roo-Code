@@ -70,6 +70,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		customModes,
 		telemetrySetting,
 		showGreeting,
+		alwaysAllowNotebookRead,
+		alwaysAllowNotebookEdit,
+		alwaysAllowNotebookExecute,
 	} = useExtensionState()
 
 	//const task = messages.length > 0 ? (messages[0].say === "task" ? messages[0] : undefined) : undefined) : undefined
@@ -156,7 +159,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							setClineAsk("tool")
 							setEnableButtons(!isPartial)
 							const tool = JSON.parse(lastMessage.text || "{}") as ClineSayTool
-							switch (tool.tool) {
+							switch (tool.tool as string) {
 								case "editedExistingFile":
 								case "appliedDiff":
 								case "newFileCreated":
@@ -166,6 +169,18 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 								case "finishTask":
 									setPrimaryButtonText(t("chat:completeSubtaskAndReturn"))
 									setSecondaryButtonText(undefined)
+									break
+								case "notebook_read":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
+									break
+								case "notebook_edit":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
+									break
+								case "notebook_execute":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
 									break
 								default:
 									setPrimaryButtonText(t("chat:approve.title"))
@@ -698,6 +713,19 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					return alwaysAllowSubtasks
 				}
 
+				// Handle notebook operations
+				if (tool?.tool === "notebook_read") {
+					return alwaysAllowNotebookRead
+				}
+
+				if (tool?.tool === "notebook_edit") {
+					return alwaysAllowNotebookEdit
+				}
+
+				if (tool?.tool === "notebook_execute") {
+					return alwaysAllowNotebookExecute
+				}
+
 				const isOutsideWorkspace = !!tool.isOutsideWorkspace
 
 				if (isReadOnlyToolAction(message)) {
@@ -726,6 +754,9 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			isMcpToolAlwaysAllowed,
 			alwaysAllowModeSwitch,
 			alwaysAllowSubtasks,
+			alwaysAllowNotebookRead,
+			alwaysAllowNotebookEdit,
+			alwaysAllowNotebookExecute,
 		],
 	)
 

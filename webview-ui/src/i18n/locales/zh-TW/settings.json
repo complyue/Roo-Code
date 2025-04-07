@@ -26,6 +26,7 @@
 		"notifications": "通知",
 		"contextManagement": "上下文管理",
 		"terminal": "終端機",
+		"notebook": "筆記本",
 		"advanced": "進階",
 		"experimental": "實驗性功能",
 		"language": "語言",
@@ -476,6 +477,22 @@
 		"showgreeting": {
 			"label": "顯示歡迎訊息",
 			"description": "啟用後，Roo 將顯示歡迎訊息與介紹。"
+		}
+	},
+	"codeContextWindow": "程式碼上下文視窗",
+	"search": "搜尋",
+	"web": "Web",
+	"browser": "瀏覽器",
+	"notebook": "筆記本",
+	"checkpoints": "檢查點",
+	"notebook": {
+		"output": {
+			"label": "筆記本輸出大小限制",
+			"description": "筆記本儲存格輸出的最大字元數"
+		},
+		"executionTimeout": {
+			"label": "筆記本執行逾時時間",
+			"description": "等待筆記本儲存格執行的最長時間（秒）"
 		}
 	}
 }

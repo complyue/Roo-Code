@@ -26,6 +26,7 @@
 		"notifications": "Notifications",
 		"contextManagement": "Context Management",
 		"terminal": "Terminal",
+		"notebook": "Notebook",
 		"advanced": "Advanced",
 		"experimental": "Experimental Features",
 		"language": "Language",
@@ -327,6 +328,16 @@
 		"zdotdir": {
 			"label": "Enable ZDOTDIR handling",
 			"description": "When enabled, creates a temporary directory for ZDOTDIR to handle zsh shell integration properly. This ensures VSCode shell integration works correctly with zsh while preserving your zsh configuration. (experimental)"
+		}
+	},
+	"notebook": {
+		"maxOutputSize": {
+			"label": "Notebook output size limit",
+			"description": "Maximum size (in characters) for notebook cell output"
+		},
+		"timeoutSeconds": {
+			"label": "Execution timeout",
+			"description": "Maximum time (in seconds) to wait for notebook cell execution"
 		}
 	},
 	"advanced": {

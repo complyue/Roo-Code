@@ -71,6 +71,7 @@ function parseCodeBlocks(text: string): TaggedCellBlock[] {
 				inCodeBlock = true
 				currentBlockHeader = codeBlockStartMatch[1].trim()
 				currentBlockContent = ""
+				continue
 			}
 
 			if (line.trim()) {

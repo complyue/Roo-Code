@@ -9,22 +9,90 @@ type ToolUseBlock = {
 	partial: boolean
 }
 
-// Define types for the JSON cell definitions
-type CellDefinition = {
-	content: string
-	cell_type?: string
-	language_id?: string
-}
-
-type ModifyCellDefinition = {
-	index: number
+// Define the simpler CellBlock type
+type CellBlock = {
+	header: string
 	content: string
 }
 
-type ReplaceCellsDefinition = {
-	start_index: number
-	end_index: number
-	cells: CellDefinition[]
+// Type for tagged cells (used for modify_cell_content)
+type TaggedCellBlock = {
+	index?: number // cell index for modify_cell_content (renamed from tag)
+	cell: CellBlock
+}
+
+/**
+ * Parse code blocks from a text string containing markdown
+ * Returns an array of TaggedCellBlock objects
+ */
+function parseCodeBlocks(text: string): TaggedCellBlock[] {
+	const taggedBlocks: TaggedCellBlock[] = []
+
+	let pendingCellIndex: number | undefined = undefined
+	let inCodeBlock = false
+	let currentBlockHeader = ""
+	let currentBlockContent = ""
+
+	// Process line by line in a single pass
+	for (const line of text.split("\n")) {
+		if (inCodeBlock) {
+			// Inside a code block
+			if (line.trimEnd() === "```") {
+				// End of code block
+				inCodeBlock = false
+
+				// Create the tagged cell block
+				taggedBlocks.push({
+					index: pendingCellIndex,
+					cell: {
+						header: currentBlockHeader,
+						content: currentBlockContent.trim(),
+					},
+				})
+
+				// Clear the pending cell index - it's been used
+				pendingCellIndex = undefined
+			} else {
+				// Add content to the current code block
+				currentBlockContent += line + "\n"
+			}
+		} else {
+			// Outside a code block
+			// Check for cell index tag
+			const cellTagMatch = line.trimEnd().match(/@cell#(\d+)/)
+			if (cellTagMatch) {
+				pendingCellIndex = parseInt(cellTagMatch[1], 10)
+				continue
+			}
+
+			// Check for the start of a code block
+			const codeBlockStartMatch = line.trimEnd().match(/^```(.*)$/)
+			if (codeBlockStartMatch) {
+				inCodeBlock = true
+				currentBlockHeader = codeBlockStartMatch[1].trim()
+				currentBlockContent = ""
+			}
+
+			if (line.trim()) {
+				// report unexpected line outside of code block
+				throw new Error(`Unexpected line outside of code block: ${line}`)
+			}
+		}
+	}
+
+	return taggedBlocks
+}
+
+/**
+ * Convert CellBlock to the format expected by NotebookService
+ */
+function convertCellBlockToDefinition(block: CellBlock) {
+	const isMarkdown = block.header.toLowerCase() === "markdown"
+	return {
+		content: block.content,
+		cell_type: isMarkdown ? "markdown" : "code",
+		language_id: block.header,
+	}
 }
 
 /**
@@ -41,8 +109,10 @@ export async function notebookEditTool(
 	// Create a typed variable to help with type checking
 	const params = block.params
 	const action: string | undefined = params.action
-	const cellsJson: string | undefined = params.cells
+	const cellsContent: string | undefined = params.cells
 	const insertAtIndex: string | undefined = params.insert_at_index
+	const startIndex: string | undefined = params.start_index
+	const endIndex: string | undefined = params.end_index
 	const noexec: string | undefined = params.noexec
 
 	try {
@@ -67,7 +137,7 @@ export async function notebookEditTool(
 			return
 		}
 
-		if (!cellsJson) {
+		if (!cellsContent && action !== "delete_cells") {
 			cline.consecutiveMistakeCount++
 			pushToolResult(await cline.sayAndCreateMissingParamError("notebook_edit", "cells"))
 			return
@@ -77,14 +147,7 @@ export async function notebookEditTool(
 
 		// Validate inputs before asking for approval
 		let validationError = ""
-		let parsedCells: any = null
-
-		try {
-			// Use string type assertion to avoid linter errors with removeClosingTag
-			parsedCells = JSON.parse(cellsJson.replace(/<\/?cells>/g, ""))
-		} catch (e) {
-			validationError = `Invalid JSON in cells parameter: ${e instanceof Error ? e.message : String(e)}`
-		}
+		let parsedData: any = null
 
 		// Parse insertAtIndex if provided
 		let parsedInsertAtIndex: number | undefined = undefined
@@ -103,86 +166,101 @@ export async function notebookEditTool(
 			}
 		}
 
-		if (!validationError) {
-			switch (action) {
-				case "insert_cells": {
-					if (!Array.isArray(parsedCells)) {
-						validationError = "For insert_cells action, cells must be a JSON array"
-					} else if (parsedCells.length === 0) {
-						validationError = "For insert_cells action, cells array cannot be empty"
-					} else {
-					}
-					break
-				}
+		// Parse start_index and end_index for replace_cells and delete_cells
+		let parsedStartIndex: number | undefined = undefined
+		let parsedEndIndex: number | undefined = undefined
 
-				case "modify_cell_content": {
-					if (!Array.isArray(parsedCells)) {
-						validationError = "For modify_cell_content action, cells must be a JSON array"
-					} else if (parsedCells.length === 0) {
-						validationError = "For modify_cell_content action, cells array cannot be empty"
-					} else {
-						// Validate each cell modification
-						for (let i = 0; i < parsedCells.length; i++) {
-							const cell = parsedCells[i]
-							if (cell.index === undefined) {
-								validationError = `Cell modification at index ${i} is missing required property: index`
-								break
-							}
-							if (!Number.isInteger(cell.index) || cell.index < 0) {
-								validationError = `Cell modification at index ${i} has invalid index: ${cell.index}. Must be a non-negative integer.`
-								break
-							}
+		if (action === "replace_cells" || action === "delete_cells") {
+			if (startIndex === undefined) {
+				validationError = `For ${action} action, start_index parameter is required`
+			} else {
+				try {
+					parsedStartIndex = parseInt(startIndex.replace(/<\/?start_index>/g, ""))
+					if (isNaN(parsedStartIndex) || parsedStartIndex < 0) {
+						validationError = `Invalid start_index: ${startIndex}. Must be a non-negative integer.`
+					}
+				} catch (e) {
+					validationError = `Invalid start_index: ${startIndex}. Must be a non-negative integer.`
+				}
+			}
+
+			if (!validationError && endIndex === undefined) {
+				validationError = `For ${action} action, end_index parameter is required`
+			} else if (!validationError) {
+				try {
+					parsedEndIndex = parseInt(endIndex!.replace(/<\/?end_index>/g, ""))
+					if (isNaN(parsedEndIndex) || parsedEndIndex <= parsedStartIndex!) {
+						validationError = `Invalid end_index: ${endIndex}. Must be greater than start_index (${parsedStartIndex}).`
+					}
+				} catch (e) {
+					validationError = `Invalid end_index: ${endIndex}. Must be a non-negative integer.`
+				}
+			}
+		}
+
+		// Process cell content based on the action
+		if (!validationError && cellsContent) {
+			const cleanedContent = cellsContent.replace(/<\/?cells>/g, "").trim()
+			const taggedBlocks = parseCodeBlocks(cleanedContent)
+
+			if (taggedBlocks.length === 0 && action !== "delete_cells") {
+				validationError = `No code blocks found in cells content`
+			} else {
+				switch (action) {
+					case "insert_cells": {
+						// Convert cell blocks to cell definitions expected by NotebookService
+						const cells = taggedBlocks.map((taggedBlock) => convertCellBlockToDefinition(taggedBlock.cell))
+
+						parsedData = cells
+						break
+					}
+
+					case "modify_cell_content": {
+						// Validate that all blocks have tags
+						const untaggedBlocks = taggedBlocks.filter((block) => block.index === undefined)
+						if (untaggedBlocks.length > 0) {
+							validationError = `Not all code blocks have @cell# tags. ${untaggedBlocks.length} blocks missing tags.`
+							break
 						}
-					}
-					break
-				}
 
-				case "replace_cells": {
-					if (typeof parsedCells !== "object" || Array.isArray(parsedCells)) {
-						validationError = "For replace_cells action, cells must be a JSON object"
-					} else if (parsedCells.start_index === undefined) {
-						validationError =
-							"For replace_cells action, cells object is missing required property: start_index"
-					} else if (parsedCells.end_index === undefined) {
-						validationError =
-							"For replace_cells action, cells object is missing required property: end_index"
-					} else if (!Number.isInteger(parsedCells.start_index) || parsedCells.start_index < 0) {
-						validationError = `Invalid start_index: ${parsedCells.start_index}. Must be a non-negative integer.`
-					} else if (
-						!Number.isInteger(parsedCells.end_index) ||
-						parsedCells.end_index <= parsedCells.start_index
-					) {
-						validationError = `Invalid end_index: ${parsedCells.end_index}. Must be greater than start_index (${parsedCells.start_index}).`
-					} else if (!Array.isArray(parsedCells.cells)) {
-						validationError = "For replace_cells action, cells.cells must be a JSON array"
-					} else if (parsedCells.cells.length === 0) {
-						validationError = "For replace_cells action, cells.cells array cannot be empty"
-					}
-					break
-				}
+						// Create array of cell modifications
+						const cells = taggedBlocks.map((taggedBlock) => ({
+							index: taggedBlock.index!,
+							content: taggedBlock.cell.content,
+						}))
 
-				case "delete_cells": {
-					if (typeof parsedCells !== "object" || Array.isArray(parsedCells)) {
-						validationError = "For delete_cells action, cells must be a JSON object"
-					} else if (parsedCells.start_index === undefined) {
-						validationError =
-							"For delete_cells action, cells object is missing required property: start_index"
-					} else if (parsedCells.end_index === undefined) {
-						validationError =
-							"For delete_cells action, cells object is missing required property: end_index"
-					} else if (!Number.isInteger(parsedCells.start_index) || parsedCells.start_index < 0) {
-						validationError = `Invalid start_index: ${parsedCells.start_index}. Must be a non-negative integer.`
-					} else if (
-						!Number.isInteger(parsedCells.end_index) ||
-						parsedCells.end_index <= parsedCells.start_index
-					) {
-						validationError = `Invalid end_index: ${parsedCells.end_index}. Must be greater than start_index (${parsedCells.start_index}).`
+						parsedData = cells
+						break
 					}
-					break
-				}
 
-				default:
-					validationError = `Unknown action: ${action}. Valid actions for notebook_edit are: insert_cells, modify_cell_content, replace_cells, delete_cells.`
+					case "replace_cells": {
+						// Convert cell blocks to cell definitions expected by NotebookService
+						const cells = taggedBlocks.map((taggedBlock) => convertCellBlockToDefinition(taggedBlock.cell))
+
+						parsedData = {
+							startIndex: parsedStartIndex,
+							endIndex: parsedEndIndex,
+							cells,
+						}
+						break
+					}
+
+					case "delete_cells": {
+						parsedData = {
+							startIndex: parsedStartIndex,
+							endIndex: parsedEndIndex,
+						}
+						break
+					}
+
+					default:
+						validationError = `Unknown action: ${action}. Valid actions for notebook_edit are: insert_cells, modify_cell_content, replace_cells, delete_cells.`
+				}
+			}
+		} else if (action === "delete_cells") {
+			parsedData = {
+				startIndex: parsedStartIndex,
+				endIndex: parsedEndIndex,
 			}
 		}
 
@@ -197,9 +275,6 @@ export async function notebookEditTool(
 			tool: "editNotebook",
 			action: removeClosingTag("action", action),
 		}
-
-		// Add cells to approval props
-		approvalProps.cells = parsedCells
 
 		// Ask for approval BEFORE executing the operation
 		const didApprove = await askApproval("tool", JSON.stringify(approvalProps))
@@ -224,15 +299,9 @@ export async function notebookEditTool(
 
 			switch (action) {
 				case "insert_cells": {
-					// Map the parsed cells to the format expected by NotebookService
-					const cellDefs = parsedCells.map((cell: CellDefinition) => ({
-						content: cell.content,
-						cell_type: cell.cell_type,
-						language_id: cell.language_id,
-					}))
-
+					// Cells are already in the format expected by NotebookService
 					result = await NotebookService.insertCells(
-						cellDefs,
+						parsedData,
 						parsedInsertAtIndex,
 						skipExecution,
 						maxOutputSize,
@@ -243,8 +312,9 @@ export async function notebookEditTool(
 				case "modify_cell_content": {
 					// Handle multiple cell modifications by iterating through them
 					const results = []
+					const cells = parsedData
 
-					for (const cell of parsedCells) {
+					for (const cell of cells) {
 						const cellIndex = cell.index
 						const cellContent = cell.content
 
@@ -272,32 +342,23 @@ export async function notebookEditTool(
 					break
 				}
 				case "replace_cells": {
-					// Map the parsed cells to the format expected by NotebookService
-					const cellDefs = parsedCells.cells.map((cell: CellDefinition) => ({
-						content: cell.content,
-						cell_type: cell.cell_type,
-						language_id: cell.language_id,
-					}))
-
 					// Create validation callback that validates indices and cells
 					const validateIndicesAndCells = (cellCount: number) => {
-						const startIndex = parsedCells.start_index
-						const endIndex = parsedCells.end_index
+						const startIdx = parsedData.startIndex
+						const endIdx = parsedData.endIndex
 
-						if (startIndex < 0 || startIndex >= cellCount) {
-							throw new Error(`Invalid start_index: ${startIndex}. Valid range is 0-${cellCount - 1}.`)
+						if (startIdx < 0 || startIdx >= cellCount) {
+							throw new Error(`Invalid start_index: ${startIdx}. Valid range is 0-${cellCount - 1}.`)
 						}
 
-						if (endIndex <= startIndex || endIndex > cellCount) {
-							throw new Error(
-								`Invalid end_index: ${endIndex}. Must be > ${startIndex} and <= ${cellCount}.`,
-							)
+						if (endIdx <= startIdx || endIdx > cellCount) {
+							throw new Error(`Invalid end_index: ${endIdx}. Must be > ${startIdx} and <= ${cellCount}.`)
 						}
 
 						return {
-							startIndex,
-							endIndex,
-							cells: cellDefs,
+							startIndex: startIdx,
+							endIndex: endIdx,
+							cells: parsedData.cells,
 						}
 					}
 
@@ -312,22 +373,20 @@ export async function notebookEditTool(
 				case "delete_cells": {
 					// Create validation callback that validates indices
 					const validateIndices = (cellCount: number) => {
-						const startIndex = parsedCells.start_index
-						const endIndex = parsedCells.end_index
+						const startIdx = parsedData.startIndex
+						const endIdx = parsedData.endIndex
 
-						if (startIndex < 0 || startIndex >= cellCount) {
-							throw new Error(`Invalid start_index: ${startIndex}. Valid range is 0-${cellCount - 1}.`)
+						if (startIdx < 0 || startIdx >= cellCount) {
+							throw new Error(`Invalid start_index: ${startIdx}. Valid range is 0-${cellCount - 1}.`)
 						}
 
-						if (endIndex <= startIndex || endIndex > cellCount) {
-							throw new Error(
-								`Invalid end_index: ${endIndex}. Must be > ${startIndex} and <= ${cellCount}.`,
-							)
+						if (endIdx <= startIdx || endIdx > cellCount) {
+							throw new Error(`Invalid end_index: ${endIdx}. Must be > ${startIdx} and <= ${cellCount}.`)
 						}
 
 						return {
-							startIndex,
-							endIndex,
+							startIndex: startIdx,
+							endIndex: endIdx,
 						}
 					}
 

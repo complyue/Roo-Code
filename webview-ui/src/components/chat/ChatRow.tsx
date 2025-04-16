@@ -666,6 +666,28 @@ export const ChatRowContent = ({
 						)}
 					</>
 				)
+			case "saveNotebook":
+				return (
+					<>
+						<div style={headerStyle}>
+							{toolIcon("save")}
+							<span style={{ fontWeight: "bold" }}>
+								{message.type === "ask"
+									? t("chat:notebook.wantsToSave", "Roo wants to save the active notebook")
+									: t("chat:notebook.didSave", "Roo saved the active notebook")}
+							</span>
+						</div>
+						{tool.content && (
+							<CodeAccordian
+								isLoading={message.partial}
+								code={tool.content}
+								language="markdown"
+								isExpanded={isExpanded}
+								onToggleExpand={onToggleExpand}
+							/>
+						)}
+					</>
+				)
 			default:
 				return null
 		}

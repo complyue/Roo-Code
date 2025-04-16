@@ -29,6 +29,7 @@ export const toolUseNames = [
 	"notebook_read",
 	"notebook_edit",
 	"notebook_execute",
+	"notebook_save",
 ] as const
 
 // Converts array of tool call names into a union type ("execute_command" | "read_file" | ...)
@@ -175,4 +176,9 @@ export interface NotebookEditToolUse extends ToolUse {
 export interface NotebookExecuteToolUse extends ToolUse {
 	name: "notebook_execute"
 	params: Partial<Pick<Record<ToolParamName, string>, "action" | "start_index" | "end_index">>
+}
+
+export interface NotebookSaveToolUse extends ToolUse {
+	name: "notebook_save"
+	params: Partial<Record<ToolParamName, string>>
 }

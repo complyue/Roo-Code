@@ -84,6 +84,7 @@ import { newTaskTool } from "./tools/newTaskTool"
 import { notebookReadTool } from "./tools/notebookReadTool"
 import { notebookEditTool } from "./tools/notebookEditTool"
 import { notebookExecuteTool } from "./tools/notebookExecuteTool"
+import { notebookSaveTool } from "./tools/notebookSaveTool"
 
 export type ToolResponse = string | Array<Anthropic.TextBlockParam | Anthropic.ImageBlockParam>
 type UserContent = Array<Anthropic.Messages.ContentBlockParam>
@@ -1439,6 +1440,8 @@ export class Cline extends EventEmitter<ClineEvents> {
 							return `[${block.name} action '${block.params.action}']`
 						case "notebook_execute":
 							return `[${block.name} action '${block.params.action}']`
+						case "notebook_save":
+							return `[${block.name}]`
 					}
 				}
 
@@ -1698,6 +1701,9 @@ export class Cline extends EventEmitter<ClineEvents> {
 							pushToolResult,
 							removeClosingTag,
 						)
+						break
+					case "notebook_save":
+						await notebookSaveTool(this, block, askApproval, handleError, pushToolResult, removeClosingTag)
 						break
 				}
 

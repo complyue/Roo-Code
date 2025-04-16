@@ -241,6 +241,7 @@ export interface ClineSayTool {
 		| "readNotebook"
 		| "editNotebook"
 		| "executeNotebook"
+		| "saveNotebook"
 	path?: string
 	diff?: string
 	content?: string

@@ -238,7 +238,9 @@
 		"wantsToEdit": "Roo 想要编辑当前活动的笔记本",
 		"didEdit": "Roo 已编辑当前活动的笔记本",
 		"wantsToExecute": "Roo 想要执行当前活动笔记本的单元格",
-		"didExecute": "Roo 已执行笔记本的单元格"
+		"didExecute": "Roo 已执行笔记本的单元格",
+		"wantsToSave": "Roo 想要保存当前活动的笔记本",
+		"didSave": "Roo 已保存当前活动的笔记本"
 	},
 	"browser": {
 		"rooWantsToUse": "Roo想使用浏览器:",

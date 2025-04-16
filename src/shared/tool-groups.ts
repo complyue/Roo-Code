@@ -26,6 +26,7 @@ export const TOOL_DISPLAY_NAMES = {
 	notebook_read: "read notebook",
 	notebook_edit: "edit notebook",
 	notebook_execute: "execute notebook",
+	notebook_save: "save notebook",
 } as const
 
 export type { ToolGroup }
@@ -55,7 +56,7 @@ export const TOOL_GROUPS: Record<ToolGroup, ToolGroupConfig> = {
 		tools: ["notebook_read"],
 	},
 	edit_nb: {
-		tools: ["notebook_edit"],
+		tools: ["notebook_edit", "notebook_save"],
 	},
 	exec_nb: {
 		tools: ["notebook_execute"],

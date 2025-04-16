@@ -17,6 +17,7 @@ import { getNewTaskDescription } from "./new-task"
 import { getNotebookReadToolDescription } from "./notebook-read"
 import { getNotebookEditToolDescription } from "./notebook-edit"
 import { getNotebookExecuteToolDescription } from "./notebook-execute"
+import { getNotebookSaveToolDescription } from "./notebook-save"
 import { DiffStrategy } from "../../diff/DiffStrategy"
 import { McpHub } from "../../../services/mcp/McpHub"
 import { Mode, ModeConfig, getModeConfig, isToolAllowedForMode, getGroupName } from "../../../shared/modes"
@@ -44,6 +45,7 @@ const toolDescriptionMap: Record<string, (args: ToolArgs) => string | undefined>
 	notebook_read: (args) => getNotebookReadToolDescription(args),
 	notebook_edit: (args) => getNotebookEditToolDescription(args),
 	notebook_execute: (args) => getNotebookExecuteToolDescription(args),
+	notebook_save: (args) => getNotebookSaveToolDescription(args),
 	apply_diff: (args) =>
 		args.diffStrategy ? args.diffStrategy.getToolDescription({ cwd: args.cwd, toolOptions: args.toolOptions }) : "",
 }
@@ -121,4 +123,5 @@ export {
 	getNotebookReadToolDescription,
 	getNotebookEditToolDescription,
 	getNotebookExecuteToolDescription,
+	getNotebookSaveToolDescription,
 }

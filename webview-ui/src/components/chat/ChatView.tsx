@@ -182,6 +182,10 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 									setPrimaryButtonText(t("chat:approve.title"))
 									setSecondaryButtonText(t("chat:reject.title"))
 									break
+								case "saveNotebook":
+									setPrimaryButtonText(t("chat:approve.title"))
+									setSecondaryButtonText(t("chat:reject.title"))
+									break
 								default:
 									setPrimaryButtonText(t("chat:approve.title"))
 									setSecondaryButtonText(t("chat:reject.title"))
@@ -718,7 +722,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					return alwaysAllowNotebookRead
 				}
 
-				if (tool?.tool === "editNotebook") {
+				if (tool?.tool === "editNotebook" || tool?.tool === "saveNotebook") {
 					return alwaysAllowNotebookEdit
 				}
 

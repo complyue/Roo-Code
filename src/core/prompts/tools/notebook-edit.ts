@@ -24,9 +24,9 @@ Parameters:
       - content: (required) The cell content
       - cell_type: (optional) The type of cell, either "code" or "markdown"
       - language_id: (optional) The language of the cell (e.g., "python", "javascript")
-  - For delete_cells: A single object with properties:
-    - start_index: (required) The starting index of the range to delete (0-based, inclusive)
-    - end_index: (required) The ending index of the range to delete (0-based, exclusive)
+- For delete_cells: A single object with properties:
+  - start_index: (required) The starting index of the range to delete (0-based, inclusive)
+  - end_index: (required) The ending index of the range to delete (0-based, exclusive)
 - insert_at_index: (optional, only for insert_cells action) The position to insert cells at (0-based, defaults to end of notebook)
 - noexec: (optional) Boolean value to prevent automatic execution of new/modified code cells.
 Usage:

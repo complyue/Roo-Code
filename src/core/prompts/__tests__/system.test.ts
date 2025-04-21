@@ -8,6 +8,7 @@ import "../../../utils/path" // Import path utils to get access to toPosix strin
 import { addCustomInstructions } from "../sections/custom-instructions"
 import { EXPERIMENT_IDS } from "../../../shared/experiments"
 import { MultiSearchReplaceDiffStrategy } from "../../diff/strategies/multi-search-replace"
+import { ExtensionToolManager } from "../../../services/extensions/ExtensionToolManager"
 
 // Mock the sections
 jest.mock("../sections/modes", () => ({
@@ -190,6 +191,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -210,6 +212,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			true, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			"1280x800", // browserViewportSize
 			defaultModeSlug, // mode
@@ -232,6 +235,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			mockMcpHub, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -252,6 +256,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // explicitly undefined mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -272,6 +277,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			true, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			"900x600", // different viewport size
 			defaultModeSlug, // mode
@@ -292,6 +298,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -313,6 +320,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -334,6 +342,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -359,6 +368,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -395,6 +405,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			"custom-mode", // mode
@@ -430,6 +441,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug as Mode, // mode
@@ -460,6 +472,7 @@ describe("SYSTEM_PROMPT", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug as Mode, // mode
@@ -508,6 +521,7 @@ describe("addCustomInstructions", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			"architect", // mode
@@ -528,6 +542,7 @@ describe("addCustomInstructions", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			undefined, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			"ask", // mode
@@ -550,6 +565,7 @@ describe("addCustomInstructions", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			mockMcpHub, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode
@@ -573,6 +589,7 @@ describe("addCustomInstructions", () => {
 			"/test/path",
 			false, // supportsComputerUse
 			mockMcpHub, // mcpHub
+			undefined, // extensionToolManager
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
 			defaultModeSlug, // mode

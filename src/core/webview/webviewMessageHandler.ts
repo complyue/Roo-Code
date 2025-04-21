@@ -263,6 +263,10 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 			await updateGlobalState("alwaysAllowMcp", message.bool)
 			await provider.postStateToWebview()
 			break
+		case "alwaysAllowExtTools":
+			await updateGlobalState("alwaysAllowExtTools", message.bool)
+			await provider.postStateToWebview()
+			break
 		case "alwaysAllowModeSwitch":
 			await updateGlobalState("alwaysAllowModeSwitch", message.bool)
 			await provider.postStateToWebview()
@@ -1399,6 +1403,7 @@ const generateSystemPrompt = async (provider: ClineProvider, message: WebviewMes
 		cwd,
 		canUseBrowserTool,
 		mcpEnabled ? provider.getMcpHub() : undefined,
+		provider.getExtensionToolManager(),
 		diffStrategy,
 		browserViewportSize ?? "900x600",
 		mode,

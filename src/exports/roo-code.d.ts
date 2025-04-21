@@ -301,6 +301,7 @@ type GlobalSettings = {
 	alwaysApproveResubmit?: boolean | undefined
 	requestDelaySeconds?: number | undefined
 	alwaysAllowMcp?: boolean | undefined
+	alwaysAllowExtTools?: boolean | undefined
 	alwaysAllowModeSwitch?: boolean | undefined
 	alwaysAllowSubtasks?: boolean | undefined
 	alwaysAllowExecute?: boolean | undefined
@@ -372,9 +373,9 @@ type GlobalSettings = {
 				roleDefinition: string
 				customInstructions?: string | undefined
 				groups: (
-					| ("read" | "edit" | "browser" | "command" | "mcp" | "modes")
+					| ("read" | "edit" | "browser" | "command" | "mcp" | "ext" | "modes")
 					| [
-							"read" | "edit" | "browser" | "command" | "mcp" | "modes",
+							"read" | "edit" | "browser" | "command" | "mcp" | "ext" | "modes",
 							{
 								fileRegex?: string | undefined
 								description?: string | undefined
@@ -418,6 +419,7 @@ type ClineMessage = {
 				| "mistake_limit_reached"
 				| "browser_action_launch"
 				| "use_mcp_server"
+				| "use_ext_tool"
 				| "finishTask"
 		  )
 		| undefined
@@ -443,6 +445,8 @@ type ClineMessage = {
 				| "command"
 				| "mcp_server_request_started"
 				| "mcp_server_response"
+				| "extension_tool_request_started"
+				| "extension_tool_response"
 				| "new_task_started"
 				| "new_task"
 				| "subtask_result"
@@ -499,6 +503,7 @@ type RooCodeEvents = {
 							| "mistake_limit_reached"
 							| "browser_action_launch"
 							| "use_mcp_server"
+							| "use_ext_tool"
 							| "finishTask"
 					  )
 					| undefined
@@ -524,6 +529,8 @@ type RooCodeEvents = {
 							| "command"
 							| "mcp_server_request_started"
 							| "mcp_server_response"
+							| "extension_tool_request_started"
+							| "extension_tool_response"
 							| "new_task_started"
 							| "new_task"
 							| "subtask_result"
@@ -601,6 +608,7 @@ type RooCodeEvents = {
 			| "list_code_definition_names"
 			| "browser_action"
 			| "use_mcp_tool"
+			| "use_ext_tool"
 			| "access_mcp_resource"
 			| "ask_followup_question"
 			| "attempt_completion"

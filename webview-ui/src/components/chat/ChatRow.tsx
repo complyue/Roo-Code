@@ -8,7 +8,13 @@ import { Button } from "@/components/ui"
 
 import { useCopyToClipboard } from "@src/utils/clipboard"
 import { safeJsonParse } from "@src/utils/json"
-import { ClineApiReqInfo, ClineAskUseMcpServer, ClineMessage, ClineSayTool } from "@roo/shared/ExtensionMessage"
+import {
+	ClineApiReqInfo,
+	ClineAskUseMcpServer,
+	ClineAskUseExtTool,
+	ClineMessage,
+	ClineSayTool,
+} from "@roo/shared/ExtensionMessage"
 import { COMMAND_OUTPUT_STRING } from "@roo/shared/combineCommandSequences"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { findMatchingResourceOrTemplate } from "@src/utils/mcp"
@@ -163,6 +169,13 @@ export const ChatRowContent = ({
 							? t("chat:mcp.wantsToUseTool", { serverName: mcpServerUse.serverName })
 							: t("chat:mcp.wantsToAccessResource", { serverName: mcpServerUse.serverName })}
 					</span>,
+				]
+			case "use_ext_tool":
+				return [
+					<span
+						className="codicon codicon-extensions"
+						style={{ color: normalColor, marginBottom: "-1.5px" }}></span>,
+					<span style={{ color: normalColor, fontWeight: "bold" }}>{t("chat:extTools.wantsToUse")}</span>,
 				]
 			case "completion_result":
 				return [
@@ -1181,6 +1194,72 @@ export const ChatRowContent = ({
 											</div>
 										)}
 									</>
+								)}
+							</div>
+						</>
+					)
+				case "use_ext_tool":
+					const useExtTool = safeJsonParse<ClineAskUseExtTool>(message.text)
+					if (!useExtTool) {
+						return null
+					}
+
+					return (
+						<>
+							<div style={headerStyle}>
+								{icon}
+								{title}
+							</div>
+
+							<div
+								style={{
+									background: "var(--vscode-textCodeBlock-background)",
+									borderRadius: "3px",
+									padding: "8px 10px",
+									marginTop: "8px",
+								}}>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "12px",
+										padding: "4px 0",
+									}}>
+									<span
+										className="codicon codicon-extensions"
+										style={{
+											fontSize: "20px",
+											marginTop: "2px",
+											color: "var(--vscode-foreground)",
+										}}
+									/>
+									<div style={{ flexGrow: 1 }}>
+										<div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+											{useExtTool.extensionId}
+										</div>
+										<div style={{ opacity: 0.9 }}>{useExtTool.toolName}</div>
+									</div>
+								</div>
+
+								{useExtTool.arguments && useExtTool.arguments !== "{}" && (
+									<div style={{ marginTop: "8px" }}>
+										<div
+											style={{
+												marginBottom: "4px",
+												opacity: 0.8,
+												fontSize: "12px",
+												textTransform: "uppercase",
+											}}>
+											{t("chat:arguments")}
+										</div>
+										<CodeAccordian
+											code={useExtTool.arguments}
+											language="json"
+											isExpanded={true}
+											onToggleExpand={onToggleExpand}
+											forceWrap={true}
+										/>
+									</div>
 								)}
 							</div>
 						</>

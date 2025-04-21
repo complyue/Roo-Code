@@ -19,6 +19,7 @@ import {
 	getObjectiveSection,
 	getSharedToolUseSection,
 	getMcpServersSection,
+	getExtToolsSection,
 	getToolUseGuidelinesSection,
 	getCapabilitiesSection,
 	getModesSection,
@@ -26,6 +27,7 @@ import {
 } from "./sections"
 import { loadSystemPromptFile } from "./sections/custom-system-prompt"
 import { formatLanguage } from "../../shared/language"
+import { ExtensionToolManager } from "../../exports/extensionToolApi"
 
 async function generatePrompt(
 	context: vscode.ExtensionContext,
@@ -55,10 +57,13 @@ async function generatePrompt(
 	const modeConfig = getModeBySlug(mode, customModeConfigs) || modes.find((m) => m.slug === mode) || modes[0]
 	const roleDefinition = promptComponent?.roleDefinition || modeConfig.roleDefinition
 
-	const [modesSection, mcpServersSection] = await Promise.all([
+	const [modesSection, mcpServersSection, extToolsSection] = await Promise.all([
 		getModesSection(context),
 		modeConfig.groups.some((groupEntry) => getGroupName(groupEntry) === "mcp")
 			? getMcpServersSection(mcpHub, effectiveDiffStrategy, enableMcpServerCreation)
+			: Promise.resolve(""),
+		modeConfig.groups.some((groupEntry) => getGroupName(groupEntry) === "ext")
+			? getExtToolsSection(ExtensionToolManager.getInstance())
 			: Promise.resolve(""),
 	])
 
@@ -80,6 +85,8 @@ ${getToolDescriptionsForMode(
 ${getToolUseGuidelinesSection()}
 
 ${mcpServersSection}
+
+${extToolsSection}
 
 ${getCapabilitiesSection(cwd, supportsComputerUse, mcpHub, effectiveDiffStrategy)}
 

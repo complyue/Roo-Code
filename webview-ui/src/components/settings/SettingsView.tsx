@@ -101,6 +101,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		alwaysAllowBrowser,
 		alwaysAllowExecute,
 		alwaysAllowMcp,
+		alwaysAllowExtTools,
 		alwaysAllowModeSwitch,
 		alwaysAllowSubtasks,
 		alwaysAllowWrite,
@@ -222,6 +223,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			vscode.postMessage({ type: "alwaysAllowExecute", bool: alwaysAllowExecute })
 			vscode.postMessage({ type: "alwaysAllowBrowser", bool: alwaysAllowBrowser })
 			vscode.postMessage({ type: "alwaysAllowMcp", bool: alwaysAllowMcp })
+			vscode.postMessage({ type: "alwaysAllowExtTools", bool: alwaysAllowExtTools })
 			vscode.postMessage({ type: "allowedCommands", commands: allowedCommands ?? [] })
 			vscode.postMessage({ type: "browserToolEnabled", bool: browserToolEnabled })
 			vscode.postMessage({ type: "soundEnabled", bool: soundEnabled })
@@ -434,6 +436,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 						alwaysApproveResubmit={alwaysApproveResubmit}
 						requestDelaySeconds={requestDelaySeconds}
 						alwaysAllowMcp={alwaysAllowMcp}
+						alwaysAllowExtTools={alwaysAllowExtTools}
 						alwaysAllowModeSwitch={alwaysAllowModeSwitch}
 						alwaysAllowSubtasks={alwaysAllowSubtasks}
 						alwaysAllowExecute={alwaysAllowExecute}

@@ -13,7 +13,11 @@ import { RooCodeAPI } from "./interface"
 import { IpcServer } from "./ipc"
 import { outputChannelLog } from "./log"
 
+import { ExtensionToolManager } from "./extensionToolApi"
+
 export class API extends EventEmitter<RooCodeEvents> implements RooCodeAPI {
+	public readonly extensionTools: ExtensionToolManager
+
 	private readonly outputChannel: vscode.OutputChannel
 	private readonly sidebarProvider: ClineProvider
 	private readonly context: vscode.ExtensionContext
@@ -29,6 +33,8 @@ export class API extends EventEmitter<RooCodeEvents> implements RooCodeAPI {
 		enableLogging = false,
 	) {
 		super()
+
+		this.extensionTools = ExtensionToolManager.getInstance()
 
 		this.outputChannel = outputChannel
 		this.sidebarProvider = provider

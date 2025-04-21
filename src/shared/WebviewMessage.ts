@@ -52,6 +52,7 @@ export interface WebviewMessage {
 		| "cancelTask"
 		| "alwaysAllowBrowser"
 		| "alwaysAllowMcp"
+		| "alwaysAllowExtTools"
 		| "alwaysAllowModeSwitch"
 		| "alwaysAllowSubtasks"
 		| "playSound"
@@ -135,6 +136,7 @@ export interface WebviewMessage {
 	commands?: string[]
 	audioType?: AudioType
 	serverName?: string
+	extensionId?: string
 	toolName?: string
 	alwaysAllow?: boolean
 	mode?: Mode
